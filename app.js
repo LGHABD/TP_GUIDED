@@ -1,4 +1,4 @@
-document.getElementById("myButton").addEventListener("click", function() {
-    document.getElementById("message").innerText =
-        "Bonjour ! Vous avez cliqué sur le bouton.";
-});
+function showMessage() {
+    document.getElementById("message").innerHTML =
+    "CI/CD with GitHub Actions works version 2!";
+}
