@@ -7,6 +7,9 @@ on:
 
 jobs:
 
+  # =========================
+  # 1. BUILD STAGE
+  # =========================
   build:
     runs-on: ubuntu-latest
 
@@ -22,6 +25,9 @@ jobs:
           test -f app.js
           echo "Build stage completed successfully"
 
+  # =========================
+  # 2. TEST STAGE
+  # =========================
   test:
     runs-on: ubuntu-latest
     needs: build
@@ -39,6 +45,9 @@ jobs:
 
           echo "All tests passed!"
 
+  # =========================
+  # 3. PACKAGE STAGE
+  # =========================
   package:
     runs-on: ubuntu-latest
     needs: test
@@ -54,17 +63,16 @@ jobs:
           cp style.css build/
           cp app.js build/
           echo "Package created"
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: web-app
-          path: build
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: web-app
           path: build/
 
+  # =========================
+  # 4. DEPLOY STAGE
+  # =========================
   deploy:
     runs-on: ubuntu-latest
     needs: package
@@ -75,8 +83,20 @@ jobs:
       id-token: write
 
     steps:
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-app
+          path: build
+
+      - name: Verify build folder
+        run: |
+          echo "Listing build folder:"
+          ls -R build
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
